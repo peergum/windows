@@ -265,7 +265,7 @@ void Screen::alert(Alert &alert) {
   alert.visible();
   window.alert = &alert;
   _updated = true;
-  refresh();
+  refresh(true); 
 }
 
 void Screen::show() {

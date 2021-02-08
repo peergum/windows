@@ -53,6 +53,8 @@ void Window::clear(void) {
  *
  */
 void Window::draw(void) {
+  Frame::clear();
+
   if (topBarVisible) {
     topBar.draw();
   }
@@ -63,6 +65,10 @@ void Window::draw(void) {
   for (int i = 0; i < _count; i++) {
     drawField(i);
   }
+  if (alert) {
+    alert->show(_x, _y, _w, _h);
+  }
+
   _updated = false;
 }
 
@@ -80,7 +86,7 @@ void Window::refresh(bool force) {
       bottomBar.refresh(force);
     }
 
-    if (_updated) {
+    if (force || _updated) {
       for (int i = 0; i < _count; i++) {
         drawField(i, DRAW_VALUE_ONLY);
       }
@@ -104,7 +110,6 @@ void Window::showTopBar(bool enabled) {
   } else {
     _y = 0;
   }
-  Serial.printlnf("y = %d",_y);
   _h = display.height() - _y - bottomBarVisible ? (bottomBarHeight + 1) : 0;
   clear();
   draw();
@@ -221,8 +226,7 @@ void Window::drawField(int index, bool valueOnly) {
   uint16_t textWidth;
   uint16_t x,y ;
   y = _y + _fields[index].y;
-  Serial.println(y);
-  if (!valueOnly) {
+   if (!valueOnly) {
     textWidth = display.textWidth(_fields[index].label);
     x = _x + _fields[index].x;
     if (_fields[index].labelAlign == ALIGN_RIGHT) {

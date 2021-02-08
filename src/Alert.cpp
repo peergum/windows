@@ -43,7 +43,6 @@ Alert &Alert::add(const char *text, uint16_t color, int size) {
 void Alert::visible(void) { _visible = true; }
 void Alert::remove(void) { _visible = false; }
 void Alert::show(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-  Serial.println("Alert");
   if (_visible) {
     uint16_t maxWidth = 0;
     uint16_t textWidth;

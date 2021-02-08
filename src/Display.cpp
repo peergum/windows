@@ -71,3 +71,9 @@ void Display<Adafruit_SSD1351>::showText(uint16_t x, uint16_t y,
   setTextColor(color);
   print(text);
 }
+
+template <>
+void Display<Adafruit_SSD1351>::loadBitmap(const char *filename) {
+  Bitmap *bitmap =new Bitmap(filename);
+  bitmap->draw(0,0);  
+}

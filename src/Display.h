@@ -18,6 +18,8 @@
 #include "Adafruit_mfGFX.h"
 #include "colors.h"
 
+#include "Bitmap.h"
+
 typedef enum DisplayOrientation {
   DISPLAY_UP = 3,
   DISPLAY_LEFT = 2,
@@ -38,7 +40,7 @@ class Display : public T {
   int textWidth(char *text);
   void showText(uint16_t x, uint16_t y, const char *text, uint8_t size = 1,
                 uint16_t color = WHITE);
-
+  void loadBitmap(const char *filename);
  private:
   uint8_t _cs;
 };
