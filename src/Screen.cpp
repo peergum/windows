@@ -261,11 +261,25 @@ void Screen::showProgress(int value) {}
 
 void Screen::hideProgressBar(void) {}
 
+/**
+ * @brief present alert on screen
+ * 
+ * @param alert 
+ */
 void Screen::alert(Alert &alert) {
   alert.visible();
   window.alert = &alert;
   _updated = true;
-  refresh(true); 
+  refresh(); 
+}
+
+/**
+ * @brief Remove alert from screen
+ * 
+ */
+void Screen::endAlert(void) {
+  window.alert = NULL;
+  _updated = true;
 }
 
 void Screen::show() {

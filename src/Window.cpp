@@ -25,14 +25,14 @@ extern DisplayDriver display;
  * @param borderColor
  */
 Window::Window(int topBarHeight, int bottomBarHeight, color_t bgColor,
-               color_t borderColor, color_t topBarBgColor,
-               color_t bottomBarBgColor )
-    : Frame(0, 0, display.width(), display.height(), bgColor, borderColor),
-      topBar(topBarHeight, topBarBgColor, borderColor),
-      bottomBar(bottomBarHeight, bottomBarBgColor, borderColor),
-      topBarVisible(false),
-      bottomBarVisible(false),
-      alert(NULL) {}
+  color_t borderColor, color_t topBarBgColor,
+  color_t bottomBarBgColor)
+  : Frame(0, 0, display.width(), display.height(), bgColor, borderColor),
+  topBar(topBarHeight, topBarBgColor, borderColor),
+  bottomBar(bottomBarHeight, bottomBarBgColor, borderColor),
+  topBarVisible(false),
+  bottomBarVisible(false),
+  alert(NULL) {}
 
 /**
  * @brief clear window
@@ -65,8 +65,13 @@ void Window::draw(void) {
   for (int i = 0; i < _count; i++) {
     drawField(i);
   }
+
+
   if (alert) {
     alert->show(_x, _y, _w, _h);
+  }
+  else if (progressBar) {
+    progressBar->draw();
   }
 
   _updated = false;
@@ -78,24 +83,33 @@ void Window::draw(void) {
  * @param force
  */
 void Window::refresh(bool force) {
+  if (topBarVisible) {
+    topBar.refresh(force);
+  }
+  if (bottomBarVisible) {
+    bottomBar.refresh(force);
+  }
+  if (force) {
+     clear();
+  }
   if (force || _updated || checkTimer(_refreshTimer, REFRESH_TIMER_MS)) {
-    if (topBarVisible) {
-      topBar.refresh(force);
-    }
-    if (bottomBarVisible) {
-      bottomBar.refresh(force);
-    }
 
     if (force || _updated) {
       for (int i = 0; i < _count; i++) {
         drawField(i, DRAW_VALUE_ONLY);
       }
-      if (alert) {
-        alert->show(_x, _y, _w, _h);
-      }
     }
-    _updated = false;
+  if (alert) {
+    alert->show(_x, _y, _w, _h);
   }
+  }
+
+  if (progressBar && !alert) {
+    progressBar->refresh();
+  }
+  
+  
+  _updated = false;
 }
 
 /**
@@ -107,7 +121,8 @@ void Window::showTopBar(bool enabled) {
   topBarVisible = enabled;
   if (enabled) {
     _y = topBar._h + 1;
-  } else {
+  }
+  else {
     _y = 0;
   }
   _h = display.height() - _y - bottomBarVisible ? (bottomBarHeight + 1) : 0;
@@ -123,7 +138,7 @@ void Window::showTopBar(bool enabled) {
 void Window::showBottomBar(bool enabled) {
   bottomBarVisible = enabled;
   _h = display.height() - _y - (topBarVisible ? (topBarHeight + 1) : 0) -
-       (bottomBarVisible ? (bottomBarHeight + 1) : 0);
+    (bottomBarVisible ? (bottomBarHeight + 1) : 0);
   clear();
   draw();
 }
@@ -139,8 +154,8 @@ void Window::showBottomBar(bool enabled) {
  * @return Window&
  */
 Window& Window::initFields(uint16_t labelWidth, uint16_t valueWidth,
-                           Alignment labelAlign, Alignment valueAlign,
-                           uint16_t labelColor) {
+  Alignment labelAlign, Alignment valueAlign,
+  uint16_t labelColor) {
   _fieldY = 1;
   _labelAlign = labelAlign;
   _valueAlign = valueAlign;
@@ -176,7 +191,7 @@ void Window::setFieldDefaults(int index) {
  * @return Window&
  */
 Window& Window::addFloat(const char* label, float floatValue, int decimals,
-                    color_t color) {
+  color_t color) {
   setFieldDefaults(_count);
   strcpy(_fields[_count].label, label);
   _fields[_count].value = floatValue;
@@ -224,14 +239,15 @@ Window& Window::addText(const char* label, const char* text, color_t color) {
  */
 void Window::drawField(int index, bool valueOnly) {
   uint16_t textWidth;
-  uint16_t x,y ;
+  uint16_t x, y;
   y = _y + _fields[index].y;
-   if (!valueOnly) {
+  if (!valueOnly) {
     textWidth = display.textWidth(_fields[index].label);
     x = _x + _fields[index].x;
     if (_fields[index].labelAlign == ALIGN_RIGHT) {
       x += _fields[index].labelWidth - textWidth;
-    } else if (_fields[index].labelAlign == ALIGN_CENTER) {
+    }
+    else if (_fields[index].labelAlign == ALIGN_CENTER) {
       x += (_fields[index].labelWidth - textWidth) / 2;
     }
 
@@ -247,20 +263,21 @@ void Window::drawField(int index, bool valueOnly) {
   sprintf(value, "%.*f", _fields[index].decimals, _fields[index].value);
   textWidth = display.textWidth(value);
   x = _x + _fields[index].x + _fields[index].labelWidth;
-  display.fillRect(x,y,_fields[index].valueWidth,9,_bgColor);
+  display.fillRect(x, y, _fields[index].valueWidth, 9, _bgColor);
   if (_fields[index].valueAlign == ALIGN_RIGHT) {
     x += _fields[index].valueWidth - textWidth;
-  } else if (_fields[index].valueAlign == ALIGN_CENTER) {
+  }
+  else if (_fields[index].valueAlign == ALIGN_CENTER) {
     x += (_fields[index].valueWidth - textWidth) / 2;
   }
   display.setCursor(
-      x, _y + _fields[index].y);
+    x, _y + _fields[index].y);
   display.setTextSize(_fields[index].size);
   display.setTextColor(_fields[index].valueColor);
   display.print(value);
-    // if (_fields[index].valueAlign == ALIGN_RIGHT) {
-    //   display.drawFastHLine(_x + _fields[index].x + _fields[index].labelWidth,y+9,_fields[index].labelWidth-textWidth,DARKBLUE);
-    // }
+  // if (_fields[index].valueAlign == ALIGN_RIGHT) {
+  //   display.drawFastHLine(_x + _fields[index].x + _fields[index].labelWidth,y+9,_fields[index].labelWidth-textWidth,DARKBLUE);
+  // }
 
 }
 
@@ -288,21 +305,42 @@ void Window::updateInt(int fieldIndex, int value) {
 
 /**
  * @brief update text field
- * 
- * @param fieldIndex 
- * @param text 
+ *
+ * @param fieldIndex
+ * @param text
  */
-void Window::updateText(int fieldIndex, const char *text) {
-  strcpy(_fields[fieldIndex].sValue,text);
+void Window::updateText(int fieldIndex, const char* text) {
+  strcpy(_fields[fieldIndex].sValue, text);
   _updated = true;
 }
 
-void Window::initTimer(unsigned long &timer) { timer = millis(); }
+void Window::initTimer(unsigned long& timer) { timer = millis(); }
 
-bool Window::checkTimer(unsigned long &timer, unsigned long durationMS) {
+bool Window::checkTimer(unsigned long& timer, unsigned long durationMS) {
   if (millis() - timer >= durationMS) {
     initTimer(timer);
     return true;
   }
   return false;
+}
+
+/**
+ * @brief add a progress bar
+ *
+ * @param bar
+ */
+void Window::setProgressBar(ProgressBar* bar) {
+  progressBar = bar;
+}
+
+
+/**
+ * @brief update progress
+ *
+ * @param progress
+ */
+void Window::setProgress(int progress) {
+  if (progressBar) {
+    progressBar->progress = progress;
+  }
 }

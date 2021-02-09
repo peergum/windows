@@ -48,6 +48,7 @@ class Screen {
   // void showBatteryIndicator(bool forceRefresh = false);
 
   void alert(Alert &alert);
+  void endAlert(void);
 
   void showProgress(int value = -1);
   void hideProgressBar(void);

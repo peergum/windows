@@ -19,12 +19,15 @@ public:
   int _h;
 
  protected:
-  bool hasTopBorder = false;
-  bool hasBottomBorder = false;
   uint16_t _bgColor;
+  uint16_t _borderColor;
+  bool hasTopBorder;
+  bool hasBottomBorder;
+  
+  void initTimer(unsigned long& timer);
+  bool checkTimer(unsigned long& timer, unsigned long durationMS);
 
  private:
-  uint16_t _borderColor;
   bool _visible = false;
 };
 

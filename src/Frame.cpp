@@ -39,3 +39,13 @@ void Frame::clear(void) {
 void Frame::draw(void) {}
 
 void Frame::refresh(bool force) {}
+
+void Frame::initTimer(unsigned long& timer) { timer = millis(); }
+
+bool Frame::checkTimer(unsigned long& timer, unsigned long durationMS) {
+  if (millis() - timer >= durationMS) {
+    initTimer(timer);
+    return true;
+  }
+  return false;
+}
