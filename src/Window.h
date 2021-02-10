@@ -16,6 +16,7 @@
 #include "TopBar.h"
 #include "BottomBar.h"
 #include "ProgressBar.h"
+#include "Activity.h"
 #include "Alert.h"
 #include "screendefs.h"
 
@@ -71,6 +72,8 @@ public:
 
   void setProgressBar(ProgressBar *bar);
   void setProgress(int progress);
+  void setActivity(Activity* activity);
+  
 
   TopBar topBar;
   BottomBar bottomBar;
@@ -78,6 +81,7 @@ public:
 
 protected:
   ProgressBar* progressBar;
+  Activity* activity;
 
 private:
   void initTimer(unsigned long& timer);

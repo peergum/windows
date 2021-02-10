@@ -4,7 +4,7 @@
 #include "CommIndicator.h"
 #include "Frame.h"
 
-class BottomBar : protected Frame {
+class BottomBar : public Frame {
  public:
   BottomBar(int h, color_t bgColor = BG_COLOR,
             color_t borderColor = BORDER_COLOR);

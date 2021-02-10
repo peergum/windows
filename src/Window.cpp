@@ -107,7 +107,11 @@ void Window::refresh(bool force) {
   if (progressBar && !alert) {
     progressBar->refresh();
   }
-  
+
+  if (activity && !alert) {
+    activity->refresh();
+  }
+
   
   _updated = false;
 }
@@ -118,14 +122,12 @@ void Window::refresh(bool force) {
  * @param enabled
  */
 void Window::showTopBar(bool enabled) {
+  if (topBarVisible == enabled) {
+    return;
+  }
   topBarVisible = enabled;
-  if (enabled) {
-    _y = topBar._h + 1;
-  }
-  else {
-    _y = 0;
-  }
-  _h = display.height() - _y - bottomBarVisible ? (bottomBarHeight + 1) : 0;
+  _y += (enabled ? (topBar._h + 1) : -(topBar._h + 1));
+  _h += (enabled ? -(topBar._h + 1) : (topBar._h + 1));
   clear();
   draw();
 }
@@ -136,9 +138,14 @@ void Window::showTopBar(bool enabled) {
  * @param enabled
  */
 void Window::showBottomBar(bool enabled) {
+  if (bottomBarVisible == enabled) {
+    return;
+  }
   bottomBarVisible = enabled;
-  _h = display.height() - _y - (topBarVisible ? (topBarHeight + 1) : 0) -
-    (bottomBarVisible ? (bottomBarHeight + 1) : 0);
+  _h += (enabled ? -(bottomBar._h + 1) : (bottomBar._h + 1));
+  if (activity) {
+    activity->_y = _y + _h - 3 * activity->_h;
+  }
   clear();
   draw();
 }
@@ -344,3 +351,13 @@ void Window::setProgress(int progress) {
     progressBar->progress = progress;
   }
 }
+
+/**
+ * @brief set activity bar
+ * 
+ * @param activityBar 
+ */
+void Window::setActivity(Activity* activityBar) {
+  activity = activityBar;
+}
+
