@@ -163,7 +163,7 @@ void Window::showBottomBar(bool enabled) {
 Window& Window::initFields(uint16_t labelWidth, uint16_t valueWidth,
   Alignment labelAlign, Alignment valueAlign,
   uint16_t labelColor) {
-  _fieldY = 1;
+  _fieldY = 2;
   _labelAlign = labelAlign;
   _valueAlign = valueAlign;
   _labelWidth = labelWidth;
@@ -184,7 +184,7 @@ void Window::setFieldDefaults(int index) {
   _fields[index].valueWidth = _valueWidth;
   _fields[index].labelAlign = _labelAlign;
   _fields[index].valueAlign = _valueAlign;
-  _fields[index].y = 10 * index;
+  _fields[index].y = _fieldY + 10 * index;
   _fields[index].x = 1;
 }
 

@@ -110,11 +110,11 @@ void CommIndicator::drawSignal(uint16_t color, int signal) {
     uint16_t hi = signalbars[i];
     uint16_t indicatorColor;
     if (signal < 0) {
-      indicatorColor = DARKBLUE;
+      indicatorColor = TOPBAR_BG_COLOR;
     } else if (i < signal) {
       indicatorColor = signalcolors[i];
     } else {
-      indicatorColor = DARKBLUE;
+      indicatorColor = COMM_INDICATOR_BG_COLOR;
     }
     display.fillRect(xi, yi - hi, wi, hi, indicatorColor);
   }

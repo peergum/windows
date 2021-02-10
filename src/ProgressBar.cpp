@@ -27,6 +27,7 @@ void ProgressBar::draw(void) {
 }
 
 void ProgressBar::refresh(bool force) {
+  char text[6];
   if (force || checkTimer(_refreshTimer, refreshRateMS)) {
     int yi, wi, index;
     display.drawRoundRect(_x-1, _y-1, _w+2, _h+2, radius, _borderColor);
@@ -44,5 +45,13 @@ void ProgressBar::refresh(bool force) {
         }
       }
     }
+#if PROGRESSBAR_SHOW_VALUE
+    sprintf(text, "%d%%", progress);
+    uint16_t textWidth = display.textWidth(text);
+    display.fillRect(_x + (_w - textWidth) / 2 -2, _y + (_h - 8) / 2-1,textWidth+4,10,PROGRESSBAR_TEXT_SHADOW);
+    display.setCursor(_x + (_w - textWidth) / 2, _y + (_h - 8) / 2);
+    display.setTextColor(PROGRESSBAR_TEXT_COLOR);
+    display.print(text);
+#endif
   }
 }

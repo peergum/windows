@@ -32,7 +32,7 @@ void BottomBar::clear(void) { Frame::clear(); }
 void BottomBar::draw(void) {
   clear();
   int textWidth = display.textWidth(_content);
-  display.showText(_x + (_w - textWidth) / 2, _y+1, _content, 1, WHITE);
+  display.showText(_x + (_w - textWidth) / 2, _y + 2, _content, 1, WHITE);
   _updated = false;
 }
 
